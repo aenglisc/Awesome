@@ -1,0 +1,9 @@
+/* This file is for your main application css. */
+@import "css/bootswatch/_variables.scss";
+@import "bootstrap";
+@import "css/bootswatch/_bootswatch.scss";
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 80px;
+}

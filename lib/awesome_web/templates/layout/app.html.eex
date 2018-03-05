@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Awesome Elixir</title>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <div class="jumbotron container text-center mt-3">
+      <h1 id="#top" class="display-1">Awesome Elixir</h1>
+      <div class ="container col-md-6 mt-3">
+        <p class="lead text-left">An awesome list of github repositories for an awesome language: <a href="https://elixir-lang.org">Elixir</a>.
+        The list is</a> parsed from <a href="https://github.com/h4cc/awesome-elixir">h4cc/awesome-elixir</a>
+        and features the amount of stars and days since the latest commit for every library.</p>
+      </div>
+      <hr class="my-4 col-md-6">
+      <h3>Filter by github stars</h2>
+      <div class="row justify-content-center mt-3">
+        <p class="lead">
+          <a href="/" class="mr-1">Show all</a>
+          <a href="/?min_stars=10" class="mx-1">&ge;10★</a>
+          <a href="/?min_stars=50" class="mx-1">&ge;50★</a>
+          <a href="/?min_stars=100" class="mx-1">&ge;100★</a>
+          <a href="/?min_stars=500" class="mx-1">&ge;500★</a>
+          <a href="/?min_stars=1000" class="ml-1">&ge;1000★</a>
+        </p>
+      </div>
+    </div>
+
+    <main role="main">
+      <%= render @view_module, @view_template, assigns %>
+    </main><!-- /container -->
+        
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>
