@@ -7,6 +7,7 @@ clean:
 	rm -rf assets/node_modules
 	rm -rf deps
 	rm -rf priv/static
+	rm -rf rel
 
 start:
 	mix phx.server

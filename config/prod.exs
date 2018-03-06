@@ -15,12 +15,14 @@ use Mix.Config
 # which you typically run after static files are built.
 config :awesome, AwesomeWeb.Endpoint,
   load_from_system_env: true,
+  server: true,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
   storage: :prod_storage
 
 # Do not print debug messages in production
-config :logger, level: :info
+# config :logger, level: :info
+config :logger, :console, format: "[$level] $message\n"
 
 config :awesome, Awesome.List.Scheduler,
   jobs: [
@@ -29,7 +31,6 @@ config :awesome, Awesome.List.Scheduler,
     # Runs every midnight:
     {"@daily", {Awesome.List.Fetcher, :update_list, []}},
   ]
-
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
@@ -70,4 +71,3 @@ config :awesome, Awesome.List.Scheduler,
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
