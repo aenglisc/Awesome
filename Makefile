@@ -9,5 +9,11 @@ clean:
 	rm -rf priv/static
 	rm -rf rel
 
+build:
+	cd assets && node_modules/brunch/bin/brunch build --production
+	mix phx.digest
+	mix release.init
+	MIX_ENV=prod mix release --env=prod
+
 start:
 	mix phx.server
