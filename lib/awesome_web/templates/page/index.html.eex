@@ -43,7 +43,7 @@
           </div>
         <% end %>
       </div>
-    <hr class="my-2 col-lg-6">
+    <hr class="row my-4">
   </div>
 <% end %>
 
