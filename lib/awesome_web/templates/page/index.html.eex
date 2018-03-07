@@ -16,7 +16,7 @@
 <%= for {section_name, section_description, section_repositories} <- @list do %>
   <div class="container text-center mt-3">
     <h4 class="display-4" id=<%= section_name |> String.downcase |> String.split(" ", trim: true) |> Enum.join("-") %>><%= section_name %></h4>
-    <p class="lead"><%= section_description %></p>
+    <p class="lead"><%= raw section_description %></p>
       <div class="row justify-content-center">
         <%= for {repo_url, repo_name, repo_description, repo_stars, repo_updated_at} <- section_repositories do %>
           <div class="col-12 col-xl-4 col-lg-6 mb-4">

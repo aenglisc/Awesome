@@ -38,7 +38,7 @@ defmodule Awesome.List.Parser do
   defp build_section([name, description | repos]) do
     {
       name,
-      description |> String.slice(1..-2),
+      description |> String.slice(1..-2) |> parse_links_in_description,
       repos |> parse_repos
     }
   end
