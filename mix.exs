@@ -21,7 +21,7 @@ defmodule Awesome.Mixfile do
   def application do
     [
       mod: {Awesome.Application, []},
-      extra_applications: [:logger, :runtime_tools, :inets, :ssl]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -44,7 +44,7 @@ defmodule Awesome.Mixfile do
       {:httpoison, "~> 1.0"},
       {:quantum, "~> 2.2"},
       {:timex, "~> 3.0"},
-      {:distillery, "~> 1.4"},
+      {:distillery, "~> 1.4", runtime: false},
       {:mock, "~> 0.3.0", only: :test},
       {:excoveralls, "~> 0.8", only: :test}
     ]
