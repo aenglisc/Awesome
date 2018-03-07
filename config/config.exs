@@ -11,7 +11,6 @@ config :awesome, AwesomeWeb.Endpoint,
   render_errors: [view: AwesomeWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Awesome.PubSub, adapter: Phoenix.PubSub.PG2],
   github_access_token: System.get_env("GITHUB_ACCESS_TOKEN")
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

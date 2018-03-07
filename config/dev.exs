@@ -12,6 +12,7 @@ config :awesome, AwesomeWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   storage: :dev_storage,
+  github_access_token: System.get_env("GITHUB_ACCESS_TOKEN"),
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
                     cd: Path.expand("../assets", __DIR__)]]
 

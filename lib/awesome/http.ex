@@ -1,8 +1,6 @@
 defmodule Awesome.Http do
   import Poison.Parser
-
-  @env Application.get_env(:awesome, AwesomeWeb.Endpoint)
-  @test_link "https://api.github.com/repos/h4cc/awesome-elixir?access_token=" <> @env[:github_access_token]
+  @test_link "https://api.github.com/repos/h4cc/awesome-elixir?access_token="
 
   def get(url) do
     url
@@ -14,6 +12,7 @@ defmodule Awesome.Http do
     1500 > get_rate()
   end
 
+  def get_token, do: Application.get_env(:awesome, AwesomeWeb.Endpoint)[:github_access_token]
   defp handle_response({:ok, %{body: body, status_code: 200}}), do: {:ok, body}
   defp handle_response({:ok, %{body: redirect_json, status_code: 301}}) do
     {:ok, %{"url" => redirect_url}} = parse(redirect_json)
@@ -22,7 +21,8 @@ defmodule Awesome.Http do
   defp handle_response(_), do: {:error, nil}
 
   defp get_rate() do
-    @test_link
+    @test_link <> get_token()
+    |> IO.inspect
     |> HTTPoison.get!
     |> Map.fetch!(:headers)
     |> Enum.filter(&(&1 |> elem(0) == "X-RateLimit-Remaining"))

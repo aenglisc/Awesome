@@ -18,6 +18,7 @@ config :awesome, AwesomeWeb.Endpoint,
   server: true,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
+  github_access_token: "${GITHUB_ACCESS_TOKEN}",
   storage: :prod_storage
 
 # Do not print debug messages in production

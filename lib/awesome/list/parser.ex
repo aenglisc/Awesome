@@ -1,14 +1,12 @@
 defmodule Awesome.List.Parser do
   alias Awesome.Http
-
-  @env Application.get_env(:awesome, AwesomeWeb.Endpoint)
   
   @regex_github_link ~r/https:\/\/github.com\/[\w\-]+\/[\w\-]+/
   @regex_repo_name ~r/\[(.*?)\]/
   @regex_description ~r/\)\ \-\ (.+)/
   @regex_link ~r/\[([^]]*)\]\(([^\s^\)]*)[\s\)]/
   @github_repo_api "https://api.github.com/repos"
-  @github_token_query "?access_token=" <> @env[:github_access_token]
+  @github_token_query "?access_token="
 
   def parse(data) do
     data
@@ -57,7 +55,7 @@ defmodule Awesome.List.Parser do
     |> URI.parse
     |> Map.get(:path)
 
-    result = @github_repo_api <> path <> @github_token_query
+    result = @github_repo_api <> path <> @github_token_query <> Http.get_token
     |> Http.get
 
     case result do

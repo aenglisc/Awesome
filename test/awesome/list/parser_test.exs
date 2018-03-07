@@ -4,15 +4,12 @@ defmodule Awesome.List.Test do
   alias Awesome.Http
   import Mock
 
-  @env Application.get_env(:awesome, AwesomeWeb.Endpoint)
-
   @sample_list Path.join(__DIR__, "__fixtures__/list.md")
 
-  @token "?access_token=" <> @env[:github_access_token]
-  @hello1_link "https://api.github.com/repos/hello/world" <> @token
-  @hello2_link "https://api.github.com/repos/hello/there" <> @token
-  @howdy1_link "https://api.github.com/repos/howdy/world" <> @token
-  @howdy2_link "https://api.github.com/repos/howdy/there" <> @token
+  @hello1_link "https://api.github.com/repos/hello/world?access_token=dummy_token"
+  @hello2_link "https://api.github.com/repos/hello/there?access_token=dummy_token"
+  @howdy1_link "https://api.github.com/repos/howdy/world?access_token=dummy_token"
+  @howdy2_link "https://api.github.com/repos/howdy/there?access_token=dummy_token"
 
   @hello1_json Path.join(__DIR__, "__fixtures__/hello1.json")
   @hello2_json Path.join(__DIR__, "__fixtures__/hello2.json")
@@ -37,15 +34,14 @@ defmodule Awesome.List.Test do
   ]
 
   test "parser creates a valid list" do
-    with_mocks([{Http, [], [
-      get: fn
+    with_mocks([
+      {Http, [], [get_token: fn -> "dummy_token" end]},
+      {Http, [], [get: fn
         @hello1_link -> {:ok, File.read!(@hello1_json)}
         @hello2_link -> {:ok, File.read!(@hello2_json)}
         @howdy1_link -> {:ok, File.read!(@howdy1_json)}
         @howdy2_link -> {:error, nil}
-      end
-    ]}]) do
-
+      end]}]) do
       parsed_list = File.read!(@sample_list)
       |> Parser.parse
 
