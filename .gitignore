@@ -30,7 +30,7 @@ npm-debug.log
 .env
 
 # DETS files
-disk_storage
+dev_storage
 test_storage
 
 # OS generated files
