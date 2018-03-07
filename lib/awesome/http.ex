@@ -12,7 +12,8 @@ defmodule Awesome.Http do
     1500 > get_rate()
   end
 
-  def get_token, do: Application.get_env(:awesome, AwesomeWeb.Endpoint)[:github_access_token]
+  def get_token, do: Application.get_env(:awesome, :github_access_token)
+
   defp handle_response({:ok, %{body: body, status_code: 200}}), do: {:ok, body}
   defp handle_response({:ok, %{body: redirect_json, status_code: 301}}) do
     {:ok, %{"url" => redirect_url}} = parse(redirect_json)
@@ -22,7 +23,6 @@ defmodule Awesome.Http do
 
   defp get_rate() do
     @test_link <> get_token()
-    |> IO.inspect
     |> HTTPoison.get!
     |> Map.fetch!(:headers)
     |> Enum.filter(&(&1 |> elem(0) == "X-RateLimit-Remaining"))

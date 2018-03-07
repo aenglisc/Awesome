@@ -1,9 +1,9 @@
 defmodule Awesome.List.Storage do
-  @env Application.get_env(:awesome, AwesomeWeb.Endpoint)
+  @storage Application.get_env(:awesome, :storage)
   @day_in_seconds 24 * 60 * 60
 
   def get_list do
-    {:ok, table} = :dets.open_file(@env[:storage], [type: :set])
+    {:ok, table} = :dets.open_file(@storage, [type: :set])
     list = :dets.match_object(table, {:"$1", :"$2", :"$3"})
     |> Enum.sort
     :dets.close(table)
@@ -11,14 +11,14 @@ defmodule Awesome.List.Storage do
   end
 
   def write_list(list) do
-    {:ok, table} = :dets.open_file(@env[:storage], [type: :set])
+    {:ok, table} = :dets.open_file(@storage, [type: :set])
     :dets.insert(table, {:latest_update, DateTime.utc_now})
     list |> Enum.each(&(:dets.insert(table, &1)))
     :dets.close(table)
   end
 
   def up_to_date? do
-    {:ok, table} = :dets.open_file(@env[:storage], [type: :set])
+    {:ok, table} = :dets.open_file(@storage, [type: :set])
     result = :dets.match_object(table, {:latest_update, :"$1"})
     :dets.close(table)
 

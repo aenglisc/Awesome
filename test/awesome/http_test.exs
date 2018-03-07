@@ -3,8 +3,8 @@ defmodule Awesome.HttpTest do
   alias Awesome.Http
   import Mock
 
-  @env Application.get_env(:awesome, AwesomeWeb.Endpoint)
-  @test_link "https://api.github.com/repos/h4cc/awesome-elixir?access_token=" <> @env[:github_access_token]
+  @github_access_token Application.get_env(:awesome, :github_access_token)
+  @test_link "https://api.github.com/repos/h4cc/awesome-elixir?access_token=" <> @github_access_token
 
   @dummy_body "Hello!"
 

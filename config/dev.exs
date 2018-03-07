@@ -11,7 +11,6 @@ config :awesome, AwesomeWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  storage: :dev_storage,
   github_access_token: System.get_env("GITHUB_ACCESS_TOKEN"),
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
                     cd: Path.expand("../assets", __DIR__)]]
@@ -42,6 +41,8 @@ config :awesome, AwesomeWeb.Endpoint,
       ~r{lib/awesome_web/templates/.*(eex)$}
     ]
   ]
+
+config :awesome, storage: :dev_storage
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
