@@ -1,4 +1,4 @@
-# Awesome
+# Awesome [![Build Status](https://travis-ci.org/aenglisc/Awesome.svg?branch=master)](https://travis-ci.org/aenglisc/Awesome)
 
 An awesome list of github repositories for an awesome language: [Elixir](https://elixir-lang.org/). The list is parsed from [h4cc/awesome-elixir](https://github.com/h4cc/awesome-elixir) and features the amount of stars and days since the latest commit for every library, updates daily.
 
