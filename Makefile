@@ -20,6 +20,3 @@ build:
 
 start-prod-build:
 	MY_HOSTNAME=example.com MY_COOKIE=secret REPLACE_OS_VARS=true MY_NODE_NAME=awesome@127.0.0.1 PORT=4000 _build/prod/rel/awesome/bin/awesome foreground
-
-deploy:
-	git -c http.extraheader="GIGALIXIR-HOT: true" push gigalixir master
