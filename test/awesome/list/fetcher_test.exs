@@ -1,7 +1,7 @@
 defmodule Awesome.List.FetcherTest do
   use ExUnit.Case, async: false
   alias Awesome.List.{Fetcher, Parser, Storage}
-  alias Awesome.Http
+  alias Awesome.Github
   import Mock
 
   @link "https://raw.githubusercontent.com/h4cc/awesome-elixir/master/README.md"
@@ -27,8 +27,8 @@ defmodule Awesome.List.FetcherTest do
 
   test "fetcher creates valid storage record" do
     with_mocks([
-      {Http, [], [get: fn(@link) -> {:ok, @list} end]},
-      {Http, [], [rate_limited?: fn() -> false end]},
+      {Github, [], [get: fn(@link) -> {:ok, @list} end]},
+      {Github, [], [rate_limited?: fn() -> false end]},
       {Parser, [], [parse: fn(_) -> @parsed_list end]}
     ]) do
       assert Fetcher.update_list == {:ok, :updated}
@@ -39,8 +39,8 @@ defmodule Awesome.List.FetcherTest do
 
   test "update if outdated works" do
     with_mocks([
-      {Http, [], [get: fn(@link) -> {:ok, @list} end]},
-      {Http, [], [rate_limited?: fn() -> false end]},
+      {Github, [], [get: fn(@link) -> {:ok, @list} end]},
+      {Github, [], [rate_limited?: fn() -> false end]},
       {Parser, [], [parse: fn(_) -> @parsed_list end]}
     ]) do
       assert Storage.up_to_date? == false
@@ -53,7 +53,7 @@ defmodule Awesome.List.FetcherTest do
 
   test "no update when rate-limited" do
     with_mocks([
-      {Http, [], [rate_limited?: fn() -> true end]},
+      {Github, [], [rate_limited?: fn() -> true end]},
       {Storage, [], [up_to_date?: fn() -> false end]}
     ]) do
       assert Fetcher.update_list == {:error, :not_updated}
@@ -64,7 +64,7 @@ defmodule Awesome.List.FetcherTest do
 
   test "no update when up-to-date" do
     with_mocks([
-      {Http, [], [rate_limited?: fn() -> false end]},
+      {Github, [], [rate_limited?: fn() -> false end]},
       {Storage, [], [up_to_date?: fn() -> true end]}
     ]) do
       assert Fetcher.update_if_outdated == {:error, :not_updated}

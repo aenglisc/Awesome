@@ -1,4 +1,4 @@
-defmodule Awesome.Http do
+defmodule Awesome.Github do
   import Poison.Parser
   @test_link "https://api.github.com/repos/h4cc/awesome-elixir?access_token="
 
@@ -26,7 +26,7 @@ defmodule Awesome.Http do
     |> HTTPoison.get!
     |> Map.fetch!(:headers)
     |> Enum.filter(&(&1 |> elem(0) == "X-RateLimit-Remaining"))
-    |> Enum.at(0)
+    |> List.first
     |> elem(1)
     |> Integer.parse
     |> elem(0)

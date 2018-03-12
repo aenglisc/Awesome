@@ -1,5 +1,5 @@
 defmodule Awesome.List.Parser do
-  alias Awesome.Http
+  alias Awesome.Github
   
   @regex_github_link ~r/https:\/\/github.com\/[\w\-]+\/[\w\-]+/
   @regex_repo_name ~r/\[(.*?)\]/
@@ -29,11 +29,11 @@ defmodule Awesome.List.Parser do
 
   defp parse_sections(list) do
     list
-    |> Task.async_stream(&(&1 |> String.split("\n", trim: true) |> build_section), timeout: :infinity)
+    |> Task.async_stream(&(&1 |> String.split("\n", trim: true) |> build_section_node), timeout: :infinity)
     |> Enum.map(fn {:ok, res} -> res end)
   end
 
-  defp build_section([name, description | repos]) do
+  defp build_section_node([name, description | repos]) do
     {
       name,
       description |> String.slice(1..-2) |> parse_links_in_description,
@@ -44,19 +44,19 @@ defmodule Awesome.List.Parser do
   defp parse_repos(list) do
     list
     |> Enum.filter(&(&1 =~ @regex_github_link))
-    |> Task.async_stream(&(&1 |> build_repo), timeout: :infinity)
+    |> Task.async_stream(&(&1 |> build_repo_node), timeout: :infinity)
     |> Enum.reduce([], fn {:ok, res}, acc -> if res, do: [res | acc], else: acc end)
     |> Enum.reverse
   end
 
-  defp build_repo(string) do
+  defp build_repo_node(string) do
     path = string
     |> get_github_url
     |> URI.parse
     |> Map.get(:path)
 
-    result = @github_repo_api <> path <> @github_token_query <> Http.get_token
-    |> Http.get
+    result = @github_repo_api <> path <> @github_token_query <> Github.get_token
+    |> Github.get
 
     case result do
       {:ok, json} ->
@@ -82,5 +82,4 @@ defmodule Awesome.List.Parser do
   defp get_repo_description(string), do: @regex_description |> Regex.run(string) |> Enum.at(1)
   
   defp parse_links_in_description(string), do: Regex.replace(@regex_link, string, "<a href=\"\\2\">\\1</a>")
-
 end

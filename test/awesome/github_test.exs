@@ -1,6 +1,6 @@
-defmodule Awesome.HttpTest do
+defmodule Awesome.GithubTest do
   use ExUnit.Case, async: false
-  alias Awesome.Http
+  alias Awesome.Github
   import Mock
 
   @github_access_token Application.get_env(:awesome, :github_access_token)
@@ -20,19 +20,19 @@ defmodule Awesome.HttpTest do
 
   test "200" do
     with_mock HTTPoison, [get: fn(@dummy_200) -> {:ok, %{body: @dummy_body, status_code: 200}} end] do
-      assert Http.get(@dummy_200) == {:ok, @dummy_body}
+      assert Github.get(@dummy_200) == {:ok, @dummy_body}
     end
   end
 
   test "403" do
     with_mock HTTPoison, [get: fn(@dummy_403) -> {:ok, status_code: 403} end] do
-      assert Http.get(@dummy_403) == {:error, nil}
+      assert Github.get(@dummy_403) == {:error, nil}
     end
   end
 
   test "404" do
     with_mock HTTPoison, [get: fn(@dummy_404) -> {:ok, status_code: 404} end] do
-      assert Http.get(@dummy_404) == {:error, nil}
+      assert Github.get(@dummy_404) == {:error, nil}
     end
   end
 
@@ -43,7 +43,7 @@ defmodule Awesome.HttpTest do
         @dummy_200 -> {:ok, %{body: @dummy_body, status_code: 200}}
       end
     ]}]) do
-      assert Http.get(@dummy_301_1) == {:ok, @dummy_body}
+      assert Github.get(@dummy_301_1) == {:ok, @dummy_body}
     end
   end
 
@@ -54,7 +54,7 @@ defmodule Awesome.HttpTest do
         @dummy_404 -> {:ok, status_code: 404}
       end
     ]}]) do
-      assert Http.get(@dummy_301_1) == {:error, nil}
+      assert Github.get(@dummy_301_1) == {:error, nil}
     end
   end
 
@@ -66,19 +66,19 @@ defmodule Awesome.HttpTest do
         @dummy_200 -> {:ok, %{body: @dummy_body, status_code: 200}}
       end
     ]}]) do
-      assert Http.get(@dummy_301_1) == {:ok, @dummy_body}
+      assert Github.get(@dummy_301_1) == {:ok, @dummy_body}
     end
   end
 
   test "not rate limited" do
     with_mock HTTPoison, [get!: fn(@test_link) -> %{headers: [{"X-RateLimit-Remaining", "4999"}], status_code: 200} end] do
-      assert Http.rate_limited? == false
+      assert Github.rate_limited? == false
     end
   end
 
   test "rate limited" do
     with_mock HTTPoison, [get!: fn(@test_link) -> %{headers: [{"X-RateLimit-Remaining", "1200"}], status_code: 200} end] do
-      assert Http.rate_limited? == true
+      assert Github.rate_limited? == true
     end
   end
 end

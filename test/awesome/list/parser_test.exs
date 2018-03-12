@@ -1,7 +1,7 @@
 defmodule Awesome.List.Test do
   use ExUnit.Case, async: false
   alias Awesome.List.Parser
-  alias Awesome.Http
+  alias Awesome.Github
   import Mock
 
   @sample_list Path.join(__DIR__, "__fixtures__/list.md")
@@ -35,8 +35,8 @@ defmodule Awesome.List.Test do
 
   test "parser creates a valid list" do
     with_mocks([
-      {Http, [], [get_token: fn -> "dummy_token" end]},
-      {Http, [], [get: fn
+      {Github, [], [get_token: fn -> "dummy_token" end]},
+      {Github, [], [get: fn
         @hello1_link -> {:ok, File.read!(@hello1_json)}
         @hello2_link -> {:ok, File.read!(@hello2_json)}
         @howdy1_link -> {:ok, File.read!(@howdy1_json)}
