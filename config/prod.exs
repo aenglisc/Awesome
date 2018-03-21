@@ -29,9 +29,9 @@ config :logger, :console, format: "[$level] $message\n"
 config :awesome, Awesome.List.Scheduler,
   jobs: [
     # Runs on startup:
-    {"@reboot", {Awesome.List.Fetcher, :update_if_outdated, []}},
+    {"@reboot", {Awesome.List.Fetcher, :update_list, [:reboot]}},
     # Runs every midnight:
-    {"@daily", {Awesome.List.Fetcher, :update_list, []}},
+    {"@daily", {Awesome.List.Fetcher, :update_list, [:daily]}},
   ]
 # ## SSL Support
 #
