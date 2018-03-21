@@ -28,6 +28,7 @@ defmodule Awesome.List.FetcherTest do
     ]) do
       assert Fetcher.update_list(:reboot) == {:error, :unavailable}
       assert Fetcher.update_list(:daily) == {:error, :unavailable}
+      File.rm(@storage_path)
     end
   end
 
