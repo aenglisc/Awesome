@@ -9,4 +9,4 @@ To run locally:
   * create a `.env` file and input your github token (see `.env.example`)
   * `make install` to get all the dependencies
   * `make start` to start
-  * visit [`localhost:4000`](http://localhost:4000) via your browser
+  * visit [`localhost:4000`](http://localhost:4000) via your browser (might take a few seconds to download)
