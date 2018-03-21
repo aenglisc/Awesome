@@ -8,26 +8,15 @@ defmodule AwesomeWeb.PageController do
   end
 
   def index(%{query_params: %{"min_stars" => stars_filter}} = conn, _params) do
-    list = Storage.get_list
     case Integer.parse(stars_filter) do
       :error ->
-        render conn, "index.html", list: list
-      {filter, _} ->
-        filtered_list = list
-        |> Enum.map(&(filter_repos(&1, filter)))
-        |> Enum.filter(fn {_, {_, repos}} -> Enum.count(repos) > 0 end)
-        render conn, "index.html", list: filtered_list
+        render conn, "index.html", list: Storage.get_list
+      {stars, _} ->
+        render conn, "index.html", list: Storage.get_list(stars)
     end
   end
 
   def index(conn, _params) do
-    list = Storage.get_list
-    render conn, "index.html", list: list
-  end
-
-  defp filter_repos({name, {description, repos}}, filter) do
-    filtered = repos
-    |> Enum.filter(fn {_, {_, _, stars, _}} -> stars >= filter end)
-    {name, {description, filtered}}
+    render conn, "index.html", list: Storage.get_list
   end
 end
