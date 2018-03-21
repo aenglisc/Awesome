@@ -8,7 +8,7 @@ defmodule Awesome.List.Parser do
 
   @regex_github_link ~r/https:\/\/github.com\/[\w\-]+\/[\w\-]+/
   @regex_repo_name ~r/\[(.*?)\]/
-  @regex_description ~r/\)\ \-\ (.+)/
+  @regex_repo_description ~r/\)\ \-\ (.+)/
 
   @regex_link ~r/\[([^]]*)\]\(([^\s^\)]*)[\s\)]/
   @link_replacement "<a href=\"\\2\">\\1</a>"
@@ -59,34 +59,38 @@ defmodule Awesome.List.Parser do
   end
 
   defp build_repo_node(repo_string, section_name) do
-    name = get_repo_name(repo_string)
-    case fetch_repo_data(repo_string) do
+    repo_name = get_repo_name(repo_string)
+    case get_repo_data(repo_string) do
       {:ok, %{@url => url, @stars => stars, @updated => updated}} ->
-        {name, {get_repo_description(repo_string), url, stars, updated}}
+        {repo_name, {get_repo_description(repo_string), url, stars, updated}}
       {:error, :rate_limited} ->
-        {name, Storage.get_repo_data(section_name, name)}
+        {repo_name, get_repo_data_local(section_name, repo_name)}
       _ ->
-        {name, :unavailable}
+        {repo_name, :unavailable}
     end
   end
 
-  defp fetch_repo_data(string) do
-    string
-    |> get_repo_path
-    |> Github.get_repo_data
-  end
-
-  defp get_repo_path(string) do
+  defp get_repo_data(string) do
     string
     |> get_github_url
     |> URI.parse
     |> Map.get(:path)
+    |> Github.get_repo_data
+  end
+
+  defp get_repo_data_local(section_name, repo_name) do
+    case Storage.get_repo_data(section_name, repo_name) do
+      {:ok, data} ->
+        data
+      _ ->
+        :unavailable
+    end
   end
 
   defp get_github_url(string), do: @regex_github_link |> Regex.run(string) |> Enum.at(0)
   defp get_repo_name(string),  do: @regex_repo_name   |> Regex.run(string) |> Enum.at(1)
   defp get_repo_description(string) do
-    @regex_description
+    @regex_repo_description
     |> Regex.run(string)
     |> Enum.at(1)
     |> parse_links_in_description

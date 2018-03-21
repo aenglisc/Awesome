@@ -44,11 +44,8 @@ defmodule Awesome.List.Storage do
     repos
     |> Map.new
     |> Map.fetch(repo_name)
-    |> find_repo
   end
-  defp find_repo(_, _), do: :unavailable
-  defp find_repo({:ok, data}), do: data
-  defp find_repo(:error), do: :unavailable
+  defp find_repo(_result, _repo_name), do: :error
 
   defp time_elapsed(date), do: DateTime.diff(DateTime.utc_now, date)
 end
