@@ -1,10 +1,10 @@
 <div class="container text-center col-xl-4 mb-5">
   <button class="dropdown-toggle btn btn-block btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-    Table of contents (<%= @list |> Enum.reduce(0, &(&2 + (&1 |> elem(2) |> Enum.count))) %> libraries across <%= Enum.count(@list) %> categories)
+    Table of contents (<%= @list |> Enum.reduce(0, &(&2 + (&1 |> elem(1) |> elem(1) |> Enum.count))) %> libraries across <%= Enum.count(@list) %> categories)
   </button>
   <div class="collapse" id="collapseExample">
     <div class="card card-body">
-      <%= for {name, _, repos} <- @list do %>
+      <%= for {name, {_, repos}} <- @list do %>
         <a class="dropdown-item" href=<%= name |> String.downcase |> String.split(" ", trim: true) |> Enum.join("-") |> String.replace_prefix("", "#") %> class="list-group-item list-group-item-action flex-column align-items-start">
           <%= name %> (<%= repos |> Enum.count %>)
         </a>
@@ -13,12 +13,12 @@
   </div>
 </div>
 
-<%= for {section_name, section_description, section_repositories} <- @list do %>
+<%= for {section_name, {section_description, section_repositories}} <- @list do %>
   <div class="container text-center mt-3">
     <h4 class="display-4" id=<%= section_name |> String.downcase |> String.split(" ", trim: true) |> Enum.join("-") %>><%= section_name %></h4>
     <p class="lead"><%= raw section_description %></p>
       <div class="row justify-content-center">
-        <%= for {repo_url, repo_name, repo_description, repo_stars, repo_updated_at} <- section_repositories do %>
+        <%= for {repo_name, {repo_description, repo_url, repo_stars, repo_updated_at}} <- section_repositories do %>
           <div class="col-12 col-xl-4 col-lg-6 mb-4">
             <div class="card border-primary h-100">
               <a class="btn btn-link card-header py-0" href=<%= repo_url %>>

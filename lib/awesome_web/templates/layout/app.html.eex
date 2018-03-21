@@ -17,7 +17,7 @@
       <div class ="container col-lg-6 col-md-8 col-xs-10 mt-3">
         <p class="lead text-left">An awesome list of github repositories for an awesome language: <a href="https://elixir-lang.org">Elixir</a>.
         The list is</a> parsed from <a href="https://github.com/h4cc/awesome-elixir">h4cc/awesome-elixir</a>
-        and features the amount of stars and days since the latest commit for every library.</p>
+        and features the amount of stars and days since the latest commit for every library. Updates daily.</p>
         <hr class="row my-4">
       </div>
       <h3>Filter by github stars</h2>
