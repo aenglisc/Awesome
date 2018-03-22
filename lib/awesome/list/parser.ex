@@ -40,10 +40,10 @@ defmodule Awesome.List.Parser do
 
   defp build_section_node(section_string) do
     [name, description | repos] = String.split(section_string, "\n", trim: true)
-    {name, {parse_section_description(description), parse_repos(repos, name)}}
+    {name, {get_section_description(description), parse_repos(repos, name)}}
   end
 
-  defp parse_section_description(string) do
+  defp get_section_description(string) do
     string
     |> String.slice(1..-2)
     |> parse_links_in_description
@@ -53,20 +53,22 @@ defmodule Awesome.List.Parser do
     list
     |> Enum.filter(&(&1 =~ @regex_github_link))
     |> Task.async_stream(&(build_repo_node(&1, section_name)), timeout: :infinity)
-    |> Enum.filter(&(match?({:ok, _res}, &1)))
-    |> Enum.map(fn {:ok, res} -> res end)
-    |> Enum.reject(&(match?({_name, :unavailable}, &1)))
+    |> Enum.reduce([], &(process_repo_node(&1, &2)))
+    |> Enum.reverse
   end
+
+  defp process_repo_node({:ok, {:ok, repo}}, acc), do: [repo | acc]
+  defp process_repo_node(_, acc), do: acc
 
   defp build_repo_node(repo_string, section_name) do
     repo_name = get_repo_name(repo_string)
     case get_repo_data(repo_string) do
       {:ok, %{@url => url, @stars => stars, @updated => updated}} ->
-        {repo_name, {get_repo_description(repo_string), url, stars, updated}}
+        {:ok, {repo_name, {get_repo_description(repo_string), url, stars, updated}}}
       {:error, :rate_limited} ->
-        {repo_name, get_repo_data_local(section_name, repo_name)}
+        get_repo_data_local(section_name, repo_name)
       _ ->
-        {repo_name, :unavailable}
+        {:error, :unavailable}
     end
   end
 
@@ -81,9 +83,9 @@ defmodule Awesome.List.Parser do
   defp get_repo_data_local(section_name, repo_name) do
     case Storage.get_repo_data(section_name, repo_name) do
       {:ok, data} ->
-        data
+        {:ok, {repo_name, data}}
       _ ->
-        :unavailable
+        {:error, :unavailable}
     end
   end
 
