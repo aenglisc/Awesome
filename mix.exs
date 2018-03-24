@@ -5,8 +5,8 @@ defmodule Awesome.Mixfile do
   def project do
     [
       app: :awesome,
-      version: "0.2.1",
-      elixir: "~> 1.4",
+      version: "0.2.2",
+      elixir: "~> 1.6.2",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -43,10 +43,11 @@ defmodule Awesome.Mixfile do
       {:cowboy, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"},
-      {:quantum, "~> 2.2"},
-      {:timex, "~> 3.1.13"},
+      {:quantum, "~> 2.2.7"},
+      {:timex, "~> 3.2.1"},
       {:distillery, "~> 1.4", runtime: false},
       {:mock, "~> 0.3.0", only: :test},
+      {:bypass, "~> 0.8", only: :test},
       {:excoveralls, "~> 0.8", only: :test},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:benchee, "~> 0.11", only: :dev}
