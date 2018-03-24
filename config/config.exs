@@ -12,6 +12,8 @@ config :awesome, AwesomeWeb.Endpoint,
   pubsub: [name: Awesome.PubSub, adapter: Phoenix.PubSub.PG2]
 
 config :awesome, github_access_token: System.get_env("GITHUB_ACCESS_TOKEN")
+config :awesome, github_api_endpoint: "https://api.github.com/repos"
+config :awesome, github_list_location: "https://raw.githubusercontent.com/h4cc/awesome-elixir/master/README.md"
 
 # Configures Elixir's Logger
 config :logger, :console,
