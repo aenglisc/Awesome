@@ -29,6 +29,9 @@ npm-debug.log
 # Env file
 .env
 
+# Cover data
+/cover
+
 # DETS files
 dev_storage
 test_storage
