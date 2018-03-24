@@ -6,9 +6,7 @@ defmodule Awesome.List.Parser do
   alias Awesome.Github
   alias Awesome.List.Storage
 
-  @regex_github_link ~r/https:\/\/github.com\/[\w\-]+\/[\w\-]+/
-  @regex_repo_name ~r/\[(.*?)\]/
-  @regex_repo_description ~r/\)\ \-\ (.+)/
+  @regex_line_parser ~r/^\* \[([^]]+)\]\(([^)]+)\) - (.+)/
 
   @regex_link ~r/\[([^]]*)\]\(([^\s^\)]*)[\s\)]/
   @link_replacement "<a href=\"\\2\">\\1</a>"
@@ -46,12 +44,11 @@ defmodule Awesome.List.Parser do
   defp get_section_description(string) do
     string
     |> String.slice(1..-2)
-    |> parse_links_in_description
+    |> md_links_to_html
   end
 
   defp parse_repos(list, section_name) do
     list
-    |> Enum.filter(&(&1 =~ @regex_github_link))
     |> Task.async_stream(&(build_repo_node(&1, section_name)), timeout: :infinity)
     |> Enum.reduce([], &(process_repo_node(&1, &2)))
     |> Enum.reverse
@@ -61,10 +58,11 @@ defmodule Awesome.List.Parser do
   defp process_repo_node(_, acc), do: acc
 
   defp build_repo_node(repo_string, section_name) do
-    repo_name = get_repo_name(repo_string)
-    case get_repo_data(repo_string) do
+    [_, repo_name, repo_url, repo_desc] = parse_repo(repo_string)
+
+    case get_repo_data_remote(repo_url) do
       {:ok, %{@url => url, @stars => stars, @updated => updated}} ->
-        {:ok, {repo_name, {get_repo_description(repo_string), url, stars, updated}}}
+        {:ok, {repo_name, {md_links_to_html(repo_desc), url, stars, updated}}}
       {:error, :rate_limited} ->
         get_repo_data_local(section_name, repo_name)
       _ ->
@@ -72,11 +70,9 @@ defmodule Awesome.List.Parser do
     end
   end
 
-  defp get_repo_data(string) do
-    string
-    |> get_github_url
+  defp get_repo_data_remote(repo_url) do
+    repo_url
     |> URI.parse
-    |> Map.get(:path)
     |> Github.get_repo_data
   end
 
@@ -89,14 +85,6 @@ defmodule Awesome.List.Parser do
     end
   end
 
-  defp get_github_url(string), do: @regex_github_link |> Regex.run(string) |> Enum.at(0)
-  defp get_repo_name(string),  do: @regex_repo_name   |> Regex.run(string) |> Enum.at(1)
-  defp get_repo_description(string) do
-    @regex_repo_description
-    |> Regex.run(string)
-    |> Enum.at(1)
-    |> parse_links_in_description
-  end
-
-  defp parse_links_in_description(string), do: Regex.replace(@regex_link, string, @link_replacement)
+  defp parse_repo(string), do: Regex.run(@regex_line_parser, string)
+  defp md_links_to_html(string), do: Regex.replace(@regex_link, string, @link_replacement)
 end
