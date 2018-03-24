@@ -9,10 +9,10 @@ defmodule Awesome.List.ParserTest do
   @list File.read!(Path.join(__DIR__, "../__fixtures__/list.md"))
   @storage_path Path.join(__DIR__, "../../../test_storage")
 
-  @repo1_path "/hello/world"
-  @repo2_path "/hello/there"
-  @repo3_path "/howdy/world"
-  @repo4_path "/howdy/there"
+  @repo1_uri URI.parse("https://github.com/hello/world")
+  @repo2_uri URI.parse("https://github.com/hello/there")
+  @repo3_uri URI.parse("https://github.com/howdy/world")
+  @repo4_uri URI.parse("https://github.com/howdy/there")
 
   @repo1_json %{
     "html_url" => "https://github.com/hello/world",
@@ -62,10 +62,10 @@ defmodule Awesome.List.ParserTest do
   test "parser creates a valid list" do
     with_mocks([
       {Github, [], [get_repo_data: fn
-        @repo1_path -> {:ok, @repo1_json}
-        @repo2_path -> {:ok, @repo2_json}
-        @repo3_path -> {:ok, @repo3_json}
-        @repo4_path -> {:error, :unavailable}
+        @repo1_uri -> {:ok, @repo1_json}
+        @repo2_uri -> {:ok, @repo2_json}
+        @repo3_uri -> {:ok, @repo3_json}
+        @repo4_uri -> {:error, :unavailable}
       end]}]) do
       assert Parser.parse_list(@list) == @parsed_list
     end
@@ -74,10 +74,10 @@ defmodule Awesome.List.ParserTest do
   test "rate limited: parser fetches old repo data" do
     with_mocks([
       {Github, [], [get_repo_data: fn
-        @repo1_path -> {:ok, @repo1_json}
-        @repo2_path -> {:error, :rate_limited}
-        @repo3_path -> {:ok, @repo3_json}
-        @repo4_path -> {:error, :unavailable}
+        @repo1_uri -> {:ok, @repo1_json}
+        @repo2_uri -> {:error, :rate_limited}
+        @repo3_uri -> {:ok, @repo3_json}
+        @repo4_uri -> {:error, :unavailable}
       end]}]) do
       Storage.write_list(@parsed_list)
       assert Parser.parse_list(@list) == @parsed_list
@@ -88,10 +88,10 @@ defmodule Awesome.List.ParserTest do
   test "rate limited: no old data" do
     with_mocks([
       {Github, [], [get_repo_data: fn
-        @repo1_path -> {:ok, @repo1_json}
-        @repo2_path -> {:error, :rate_limited}
-        @repo3_path -> {:ok, @repo3_json}
-        @repo4_path -> {:error, :unavailable}
+        @repo1_uri -> {:ok, @repo1_json}
+        @repo2_uri -> {:error, :rate_limited}
+        @repo3_uri -> {:ok, @repo3_json}
+        @repo4_uri -> {:error, :unavailable}
       end]}]) do
       assert Parser.parse_list(@list) == @parsed_list_rate_limited
       File.rm!(@storage_path)
