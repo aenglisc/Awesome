@@ -6,10 +6,10 @@ defmodule Awesome.AwesomeTest do
 
   @list File.read!(Path.join(__DIR__, "__fixtures__/list.md"))
 
-  @repo1_uri "/hello/world"
-  @repo2_uri "/hello/there"
-  @repo3_uri "/howdy/world"
-  @repo4_uri "/howdy/there"
+  @repo1_path "/hello/world"
+  @repo2_path "/hello/there"
+  @repo3_path "/howdy/world"
+  @repo4_path "/howdy/there"
 
   @repo1_json File.read!(Path.join(__DIR__, "__fixtures__/repo1.json"))
   @repo2_json File.read!(Path.join(__DIR__, "__fixtures__/repo2.json"))
@@ -72,16 +72,16 @@ defmodule Awesome.AwesomeTest do
     Bypass.expect(bypass, "GET", "/",
       &send_resp(&1, 200, @list))
 
-    Bypass.expect(bypass, "GET", @repo1_uri,
+    Bypass.expect(bypass, "GET", @repo1_path,
       &send_resp(&1, 200, @repo1_json))
 
-    Bypass.expect(bypass, "GET", @repo2_uri,
+    Bypass.expect(bypass, "GET", @repo2_path,
       &send_resp(&1, 200, @repo2_json))
 
-    Bypass.expect(bypass, "GET", @repo3_uri,
+    Bypass.expect(bypass, "GET", @repo3_path,
       &send_resp(&1, 200, @repo3_json))
 
-    Bypass.expect(bypass, "GET", @repo4_uri,
+    Bypass.expect(bypass, "GET", @repo4_path,
       &send_resp(&1, 404, ""))
 
     assert Storage.up_to_date? == false
@@ -104,16 +104,16 @@ defmodule Awesome.AwesomeTest do
     Bypass.expect(bypass, "GET", "/",
       &send_resp(&1, 200, @list))
 
-    Bypass.expect(bypass, "GET", @repo1_uri,
+    Bypass.expect(bypass, "GET", @repo1_path,
       &send_resp(&1, 200, @repo1_json))
 
-    Bypass.expect(bypass, "GET", @repo2_uri,
+    Bypass.expect(bypass, "GET", @repo2_path,
       &send_resp(Map.put(&1, :resp_headers, @rate_limit), 403, ""))
 
-    Bypass.expect(bypass, "GET", @repo3_uri,
+    Bypass.expect(bypass, "GET", @repo3_path,
       &send_resp(&1, 200, @repo3_json))
 
-    Bypass.expect(bypass, "GET", @repo4_uri,
+    Bypass.expect(bypass, "GET", @repo4_path,
       &send_resp(&1, 404, ""))
 
     assert Fetcher.update_list(:daily) == :ok
