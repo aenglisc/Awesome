@@ -33,7 +33,7 @@ defmodule AwesomeWeb.PageControllerTest do
     Storage.write_list(@list)
     conn = get conn, "/?min_stars=50"
     assert html_response(conn, 200)
-    assert length(conn.assigns.list) == 1
+    assert conn.assigns.list == [List.first(@list)]
     File.rm!(@storage_path)
   end
 
