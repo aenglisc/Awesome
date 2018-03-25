@@ -10,8 +10,8 @@ defmodule Awesome.List.Storage do
     list = :dets.match_object(table, {:"$1", {:"$2", :"$3"}})
     :dets.close(table)
     list
-    |> Enum.map(&(filter_repos(&1, stars)))
-    |> Enum.filter(&(filter_sections(&1)))
+    |> Enum.map(&filter_repos(&1, stars))
+    |> Enum.filter(&filter_sections(&1))
     |> Enum.sort
   end
 
@@ -26,7 +26,7 @@ defmodule Awesome.List.Storage do
   def write_list(list) do
     {:ok, table} = :dets.open_file(@storage, [type: :set])
     :dets.insert(table, {:latest_update, DateTime.utc_now})
-    Enum.each(list, &(:dets.insert(table, &1)))
+    Enum.each(list, &:dets.insert(table, &1))
     :dets.close(table)
   end
 

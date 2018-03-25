@@ -31,8 +31,8 @@ defmodule Awesome.List.Parser do
 
   defp parse_sections(list) do
     list
-    |> Task.async_stream(&(build_section_node(&1)), @timeout)
-    |> Enum.filter(&(match?({:ok, _res}, &1)))
+    |> Task.async_stream(&build_section_node(&1), @timeout)
+    |> Enum.filter(&match?({:ok, _res}, &1))
     |> Enum.map(fn {:ok, res} -> res end)
   end
 
@@ -49,8 +49,8 @@ defmodule Awesome.List.Parser do
 
   defp parse_repos(list, section_name) do
     list
-    |> Task.async_stream(&(build_repo_node(parse_repo(&1), section_name)), @timeout)
-    |> Enum.reduce([], &(process_repo_node(&1, &2)))
+    |> Task.async_stream(&build_repo_node(parse_repo(&1), section_name), @timeout)
+    |> Enum.reduce([], &process_repo_node(&1, &2))
     |> Enum.reverse
   end
 
