@@ -23,21 +23,6 @@ defmodule Awesome.List.Storage do
 
   defp filter_sections({_name, {_desc, repos}}), do: length(repos) > 0
 
-  def up_to_date? do
-    {:ok, table} = :dets.open_file(@storage, [type: :set])
-    result = :dets.match_object(table, {:latest_update, :"$1"})
-    :dets.close(table)
-
-    case result[:latest_update] do
-      nil ->
-        false
-      date ->
-        time_elapsed(date) < @day_in_seconds
-    end
-  end
-
-  defp time_elapsed(date), do: DateTime.diff(DateTime.utc_now, date)
-
   def write_list(list) do
     {:ok, table} = :dets.open_file(@storage, [type: :set])
     :dets.insert(table, {:latest_update, DateTime.utc_now})
@@ -60,4 +45,18 @@ defmodule Awesome.List.Storage do
   end
   defp find_repo(_result, _repo_name), do: :error
 
+  def up_to_date? do
+    {:ok, table} = :dets.open_file(@storage, [type: :set])
+    result = :dets.match_object(table, {:latest_update, :"$1"})
+    :dets.close(table)
+
+    case result[:latest_update] do
+      nil ->
+        false
+      date ->
+        time_elapsed(date) < @day_in_seconds
+    end
+  end
+
+  defp time_elapsed(date), do: DateTime.diff(DateTime.utc_now, date)
 end

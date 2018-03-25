@@ -2,7 +2,6 @@ defmodule Awesome.List.Fetcher do
   @moduledoc """
     List fetcher
   """
-
   alias Awesome.List.{Parser, Storage}
   alias Awesome.Github
 

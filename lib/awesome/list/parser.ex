@@ -2,18 +2,18 @@ defmodule Awesome.List.Parser do
   @moduledoc """
     List parser
   """
-
   alias Awesome.Github
   alias Awesome.List.Storage
 
   @regex_line_parser ~r/^\* \[([^]]+)\]\(([^)]+)\) - (.+)/
-
   @regex_link ~r/\[([^]]*)\]\(([^\s^\)]*)[\s\)]/
   @link_replacement "<a href=\"\\2\">\\1</a>"
 
   @url "html_url"
   @stars "stargazers_count"
   @updated "pushed_at"
+
+  @timeout timeout: :infinity
 
   def parse_list(raw_list_string) do
     raw_list_string
@@ -31,7 +31,7 @@ defmodule Awesome.List.Parser do
 
   defp parse_sections(list) do
     list
-    |> Task.async_stream(&(build_section_node(&1)), timeout: :infinity)
+    |> Task.async_stream(&(build_section_node(&1)), @timeout)
     |> Enum.filter(&(match?({:ok, _res}, &1)))
     |> Enum.map(fn {:ok, res} -> res end)
   end
@@ -49,7 +49,7 @@ defmodule Awesome.List.Parser do
 
   defp parse_repos(list, section_name) do
     list
-    |> Task.async_stream(&(build_repo_node(&1, section_name)), timeout: :infinity)
+    |> Task.async_stream(&(build_repo_node(parse_repo(&1), section_name)), @timeout)
     |> Enum.reduce([], &(process_repo_node(&1, &2)))
     |> Enum.reverse
   end
@@ -57,9 +57,7 @@ defmodule Awesome.List.Parser do
   defp process_repo_node({:ok, {:ok, repo}}, acc), do: [repo | acc]
   defp process_repo_node(_, acc), do: acc
 
-  defp build_repo_node(repo_string, section_name) do
-    [_, repo_name, repo_url, repo_desc] = parse_repo(repo_string)
-
+  defp build_repo_node([_, repo_name, repo_url, repo_desc], section_name) do
     case get_repo_data_remote(repo_url) do
       {:ok, %{@url => url, @stars => stars, @updated => updated}} ->
         {:ok, {repo_name, {md_links_to_html(repo_desc), url, stars, updated}}}
@@ -69,6 +67,7 @@ defmodule Awesome.List.Parser do
         {:error, :unavailable}
     end
   end
+  defp build_repo_node(_repo, _section), do: {:error, :unavailable}
 
   defp get_repo_data_remote(repo_url) do
     repo_url

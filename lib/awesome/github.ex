@@ -4,7 +4,7 @@ defmodule Awesome.Github do
   """
   import Poison.Parser
   @github_token_query "?access_token="
-  @rate "X-RateLimit-Remaining"
+  @rate_remaining "X-RateLimit-Remaining"
 
   defp get_list_url, do: Application.get_env(:awesome, :github_list_location)
   defp get_endpoint, do: Application.get_env(:awesome, :github_api_endpoint)
@@ -25,15 +25,17 @@ defmodule Awesome.Github do
   def get_repo_data(_), do: {:error, :unavailable}
 
   defp handle_response({:ok, %{body: body, status_code: 200}}), do: {:ok, body}
-  defp handle_response({:ok, %{headers: headers, status_code: 403}}) do
-    case headers |> Map.new |> Map.fetch(@rate) do
-      {:ok, "0"} ->
+  defp handle_response({:ok, %{headers: headers, status_code: 403}}), do: check_rate(headers)
+  defp handle_response(_), do: {:error, :unavailable}
+
+  defp check_rate(headers) do
+    case Map.new(headers)[@rate_remaining] do
+      "0" ->
         {:error, :rate_limited}
       _ ->
         {:error, :unavailable}
     end
   end
-  defp handle_response(_), do: {:error, :unavailable}
 
   defp parse_response({:ok, body}), do: parse(body)
   defp parse_response(error),       do: error
