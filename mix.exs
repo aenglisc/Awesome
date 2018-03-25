@@ -46,7 +46,6 @@ defmodule Awesome.Mixfile do
       {:quantum, "~> 2.2.7"},
       {:timex, "~> 3.2.1"},
       {:distillery, "~> 1.4", runtime: false},
-      {:mock, "~> 0.3.0", only: :test},
       {:bypass, "~> 0.8", only: :test},
       {:excoveralls, "~> 0.8", only: :test},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
