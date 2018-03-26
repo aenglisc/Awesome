@@ -48,8 +48,7 @@ defmodule Awesome.Mixfile do
       {:distillery, "~> 1.4", runtime: false},
       {:bypass, "~> 0.8", only: :test},
       {:excoveralls, "~> 0.8", only: :test},
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
-      {:benchee, "~> 0.11", only: :dev}
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
 end
