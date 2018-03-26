@@ -2,7 +2,6 @@ defmodule Awesome.Github do
   @moduledoc """
     Github interaction
   """
-  import Poison.Parser
   @github_token_query "?access_token="
   @rate_remaining "X-RateLimit-Remaining"
 
@@ -37,6 +36,6 @@ defmodule Awesome.Github do
     end
   end
 
-  defp parse_response({:ok, body}), do: parse(body)
+  defp parse_response({:ok, body}), do: Jason.decode(body)
   defp parse_response(error),       do: error
 end
