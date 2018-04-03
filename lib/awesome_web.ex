@@ -38,7 +38,7 @@ defmodule AwesomeWeb do
       use Phoenix.HTML
 
       import AwesomeWeb.Router.Helpers
-      import AwesomeWeb.ErrorHelpers
+      # import AwesomeWeb.ErrorHelpers
       import AwesomeWeb.Gettext
     end
   end
