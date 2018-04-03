@@ -1,49 +1,5 @@
-<div class="container text-center col-xl-4 mb-5">
-  <button class="dropdown-toggle btn btn-block btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-    Table of contents (<%= @list |> Enum.reduce(0, &(&2 + (&1 |> elem(1) |> elem(1) |> Enum.count))) %> libraries across <%= Enum.count(@list) %> categories)
-  </button>
-  <div class="collapse" id="collapseExample">
-    <div class="card card-body">
-      <%= for {name, {_, repos}} <- @list do %>
-        <a class="dropdown-item" href="#<%= name_to_id(name) %>" class="list-group-item list-group-item-action flex-column align-items-start">
-          <%= name %> (<%= length(repos) %>)
-        </a>
-      <% end %>
-    </div>
-  </div>
-</div>
-
-<%= for {section_name, {section_description, section_repositories}} <- @list do %>
-  <div class="container text-center mt-3">
-    <h4 class="display-4" id="<%= name_to_id(section_name) %>"><%= section_name %></h4>
-    <p class="lead"><%= raw section_description %></p>
-      <div class="row justify-content-center">
-        <%= for {repo_name, {repo_description, repo_url, repo_stars, repo_updated_at}} <- section_repositories do %>
-          <div class="col-12 col-xl-4 col-lg-6 mb-4">
-            <div class="card border-primary h-100">
-              <a class="btn btn-link card-header py-0" href=<%= repo_url %>>
-                <h4 class="card-title pt-2"> <%= repo_name %> </h4>
-              </a>
-              <div class="card-body card-text text-left py-3">
-                <%= raw repo_description %>
-              </div>
-              <div class="card-footer py-2 align-middle">
-                <div class="row mx-1 justify-content-between">
-                  <%= days = days_since_update(repo_updated_at); if days >= 365 do %>
-                    <small class="text-danger">updated <%= days %> ago</small>
-                  <% else %>
-                    <small>updated <%= case days do 0 -> "today"; 1 -> "yesterday"; _ -> "#{days} days ago" end %></small>
-                  <% end %>
-                  <small><%= repo_stars %> ★</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <hr class="row my-4">
-  </div>
-<% end %>
+<%= raw render_table_of_contents(@list) %>
+<%= raw render_list(@list) %>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-bottom justify-content-around mt-2">
   <p><a href="https://github.com/aenglisc">aenglisc</a>, 2018</p>
