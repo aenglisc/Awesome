@@ -41,6 +41,7 @@ defmodule Awesome.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:earmark, "~> 1.2.4"},
       {:jason, "~> 1.0"},
       {:httpoison, "~> 1.0"},
       {:quantum, "~> 2.2.7"},

@@ -5,7 +5,7 @@
   <div class="collapse" id="collapseExample">
     <div class="card card-body">
       <%= for {name, {_, repos}} <- @list do %>
-        <a class="dropdown-item" href=<%= name |> String.downcase |> String.split(" ", trim: true) |> Enum.join("-") |> String.replace_prefix("", "#") %> class="list-group-item list-group-item-action flex-column align-items-start">
+        <a class="dropdown-item" href="#<%= name_to_id(name) %>" class="list-group-item list-group-item-action flex-column align-items-start">
           <%= name %> (<%= repos |> Enum.count %>)
         </a>
       <% end %>
@@ -15,7 +15,7 @@
 
 <%= for {section_name, {section_description, section_repositories}} <- @list do %>
   <div class="container text-center mt-3">
-    <h4 class="display-4" id=<%= section_name |> String.downcase |> String.split(" ", trim: true) |> Enum.join("-") %>><%= section_name %></h4>
+    <h4 class="display-4" id="<%= name_to_id(section_name) %>"><%= section_name %></h4>
     <p class="lead"><%= raw section_description %></p>
       <div class="row justify-content-center">
         <%= for {repo_name, {repo_description, repo_url, repo_stars, repo_updated_at}} <- section_repositories do %>
@@ -29,12 +29,10 @@
               </div>
               <div class="card-footer py-2 align-middle">
                 <div class="row mx-1 justify-content-between">
-                  <%= {_, updated_at, _} = repo_updated_at |> DateTime.from_iso8601
-                    days = round(DateTime.diff(DateTime.utc_now, updated_at) / 24 / 60 / 60)
-                    if days >= 365 do %>
-                    <small class="text-danger">updated <%= case days do 0 -> "today"; 1 -> "#{days} day ago"; _ -> "#{days} days ago" end %></small>
+                  <%= if days = days_since_update(repo_updated_at) >= 365 do %>
+                    <small class="text-danger">updated <%= days %> ago</small>
                   <% else %>
-                    <small>updated <%= case days do 0 -> "today"; 1 -> "#{days} day ago"; _ -> "#{days} days ago" end %></small>
+                    <small>updated <%= case days do 0 -> "today"; 1 -> "yesterday"; _ -> "#{days} days ago" end %></small>
                   <% end %>
                   <small><%= repo_stars %> ★</small>
                 </div>

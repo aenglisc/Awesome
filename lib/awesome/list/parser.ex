@@ -3,11 +3,8 @@ defmodule Awesome.List.Parser do
     List parser
   """
   alias Awesome.Github
-  alias Awesome.List.Storage
 
   @regex_line_parser ~r/^\* \[([^]]+)\]\(([^)]+)\) - (.+)/
-  @regex_link ~r/\[([^]]*)\]\(([^\s^\)]*)[\s\)]/
-  @link_replacement "<a href=\"\\2\">\\1</a>"
 
   @url "html_url"
   @stars "stargazers_count"
@@ -38,18 +35,18 @@ defmodule Awesome.List.Parser do
 
   defp build_section_node(section_string) do
     [name, description | repos] = String.split(section_string, "\n", trim: true)
-    {name, {get_section_description(description), parse_repos(repos, name)}}
+    {name, {get_section_description(description), parse_repos(repos)}}
   end
 
   defp get_section_description(string) do
     string
     |> String.slice(1..-2)
-    |> md_links_to_html
+    |> Earmark.as_html!
   end
 
-  defp parse_repos(list, section_name) do
+  defp parse_repos(list) do
     list
-    |> Task.async_stream(&build_repo_node(parse_repo(&1), section_name), @timeout)
+    |> Task.async_stream(&build_repo_node(parse_repo(&1)), @timeout)
     |> Enum.reduce([], &process_repo_node(&1, &2))
     |> Enum.reverse
   end
@@ -57,33 +54,21 @@ defmodule Awesome.List.Parser do
   defp process_repo_node({:ok, {:ok, repo}}, acc), do: [repo | acc]
   defp process_repo_node(_, acc), do: acc
 
-  defp build_repo_node([_, repo_name, repo_url, repo_desc], section_name) do
-    case get_repo_data_remote(repo_url) do
+  defp build_repo_node([_, repo_name, repo_url, repo_desc]) do
+    case get_repo_data(repo_url) do
       {:ok, %{@url => url, @stars => stars, @updated => updated}} ->
-        {:ok, {repo_name, {md_links_to_html(repo_desc), url, stars, updated}}}
-      {:error, :rate_limited} ->
-        get_repo_data_local(section_name, repo_name)
+        {:ok, {repo_name, {Earmark.as_html!(repo_desc), url, stars, updated}}}
       _ ->
         {:error, :unavailable}
     end
   end
-  defp build_repo_node(_repo, _section), do: {:error, :unavailable}
+  defp build_repo_node(_repo), do: {:error, :unavailable}
 
-  defp get_repo_data_remote(repo_url) do
+  defp get_repo_data(repo_url) do
     repo_url
     |> URI.parse
     |> Github.get_repo_data
   end
 
-  defp get_repo_data_local(section_name, repo_name) do
-    case Storage.get_repo_data(section_name, repo_name) do
-      {:ok, data} ->
-        {:ok, {repo_name, data}}
-      _ ->
-        {:error, :unavailable}
-    end
-  end
-
   defp parse_repo(string), do: Regex.run(@regex_line_parser, string)
-  defp md_links_to_html(string), do: Regex.replace(@regex_link, string, @link_replacement)
 end
