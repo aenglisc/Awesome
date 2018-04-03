@@ -6,7 +6,7 @@ defmodule AwesomeWeb.PageView do
     |> Task.async_stream(&render_contents_item/1)
     |> Enum.map(fn {:ok, res} -> res end)
     |> Enum.join("\n")
-    
+
     """
     <div class="container text-center col-xl-4 mb-5">
       <button class="dropdown-toggle btn btn-block btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -88,8 +88,8 @@ defmodule AwesomeWeb.PageView do
 
   defp render_days(0), do: "<small>updated today</small>"
   defp render_days(1), do: "<small>updated yesterday</small>"
-  defp render_days(days) when days >= 365, do: "<small class=\"text-danger\">updated #{days} ago</small>"
-  defp render_days(days), do: "<small>updated #{days} ago</small>"
+  defp render_days(days) when days >= 365, do: "<small class=\"text-danger\">updated #{days} days ago</small>"
+  defp render_days(days), do: "<small>updated #{days} days ago</small>"
 
   defp days_since_update(date) do
     {_, updated_at, _} = DateTime.from_iso8601(date)
