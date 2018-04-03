@@ -6,7 +6,7 @@
     <div class="card card-body">
       <%= for {name, {_, repos}} <- @list do %>
         <a class="dropdown-item" href="#<%= name_to_id(name) %>" class="list-group-item list-group-item-action flex-column align-items-start">
-          <%= name %> (<%= repos |> Enum.count %>)
+          <%= name %> (<%= length(repos) %>)
         </a>
       <% end %>
     </div>
@@ -24,12 +24,12 @@
               <a class="btn btn-link card-header py-0" href=<%= repo_url %>>
                 <h4 class="card-title pt-2"> <%= repo_name %> </h4>
               </a>
-              <div class="card-body py-3">
-                <p class="card-text text-left"><%= raw repo_description %></p>
+              <div class="card-body card-text text-left py-3">
+                <%= raw repo_description %>
               </div>
               <div class="card-footer py-2 align-middle">
                 <div class="row mx-1 justify-content-between">
-                  <%= if days = days_since_update(repo_updated_at) >= 365 do %>
+                  <%= days = days_since_update(repo_updated_at); if days >= 365 do %>
                     <small class="text-danger">updated <%= days %> ago</small>
                   <% else %>
                     <small>updated <%= case days do 0 -> "today"; 1 -> "yesterday"; _ -> "#{days} days ago" end %></small>
