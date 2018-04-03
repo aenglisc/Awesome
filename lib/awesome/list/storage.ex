@@ -30,21 +30,6 @@ defmodule Awesome.List.Storage do
     :dets.close(table)
   end
 
-  def get_repo_data(section_name, repo_name) do
-    {:ok, table} = :dets.open_file(@storage, [type: :set])
-    section = :dets.lookup(table, section_name)
-    :dets.close(table)
-
-    find_repo(section, repo_name)
-  end
-
-  defp find_repo([{_name, {_desc, repos}}], repo_name) do
-    repos
-    |> Map.new
-    |> Map.fetch(repo_name)
-  end
-  defp find_repo(_result, _repo_name), do: :error
-
   def up_to_date? do
     {:ok, table} = :dets.open_file(@storage, [type: :set])
     result = :dets.match_object(table, {:latest_update, :"$1"})
