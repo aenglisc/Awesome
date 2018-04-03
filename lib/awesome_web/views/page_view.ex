@@ -6,6 +6,7 @@ defmodule AwesomeWeb.PageView do
     |> Task.async_stream(&render_contents_item/1)
     |> Enum.map(fn {:ok, res} -> res end)
     |> Enum.join("\n")
+    
     """
     <div class="container text-center col-xl-4 mb-5">
       <button class="dropdown-toggle btn btn-block btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -39,7 +40,6 @@ defmodule AwesomeWeb.PageView do
   end
 
   defp render_contents_item({name, {_, repos}}) do
-
     """
     <a class="dropdown-item" href="##{name_to_id(name)}" class="list-group-item list-group-item-action flex-column align-items-start">
       #{name} (#{length(repos)})
