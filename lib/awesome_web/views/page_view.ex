@@ -3,8 +3,7 @@ defmodule AwesomeWeb.PageView do
 
   def render_table_of_contents(list) do
     rendered_contents = list
-    |> Task.async_stream(&render_contents_item/1)
-    |> Enum.map(fn {:ok, res} -> res end)
+    |> Enum.map(&render_contents_item/1)
     |> Enum.join("\n")
 
     """
@@ -23,8 +22,7 @@ defmodule AwesomeWeb.PageView do
 
   def render_list(list) do
     list
-    |> Task.async_stream(&render_section/1)
-    |> Enum.map(fn {:ok, res} -> res end)
+    |> Enum.map(&render_section/1)
     |> Enum.join("\n")
   end
 
@@ -49,8 +47,7 @@ defmodule AwesomeWeb.PageView do
 
   defp render_section({name, {desc, repos}}) do
     rendered_repos = repos
-    |> Task.async_stream(&render_repo/1)
-    |> Enum.map(fn {:ok, res} -> res end)
+    |> Enum.map(&render_repo/1)
     |> Enum.join("\n")
 
     """
