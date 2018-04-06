@@ -2,7 +2,7 @@ defmodule Awesome.List.Parser do
   @moduledoc """
     List parser
   """
-  alias Awesome.Github
+  alias Awesome.List.Github
 
   @regex_line_parser ~r/^\* \[([^]]+)\]\(([^)]+)\) - (.+)/
 

@@ -1,4 +1,4 @@
-defmodule Awesome.Github do
+defmodule Awesome.List.Github do
   @moduledoc """
     Github interaction
   """

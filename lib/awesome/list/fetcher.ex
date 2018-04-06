@@ -2,8 +2,7 @@ defmodule Awesome.List.Fetcher do
   @moduledoc """
     List fetcher
   """
-  alias Awesome.List.{Parser, Storage}
-  alias Awesome.Github
+  alias Awesome.List.{Github, Parser, Storage}
 
   def update_list(:daily), do: Github.get_list |> parse_and_write
   def update_list(:reboot), do: unless Storage.up_to_date?, do: Github.get_list |> parse_and_write
