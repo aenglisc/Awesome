@@ -4,7 +4,7 @@ defmodule Awesome.List.Parser do
   """
   alias Awesome.List.Github
 
-  @regex_line_parser ~r/^\* \[([^]]+)\]\(([^)]+)\) - (.+)/
+  @regex_line_parser ~r{^\* \[([^]]+)\]\(([^)]+)\) - (.+)}
 
   @url "html_url"
   @stars "stargazers_count"
@@ -21,7 +21,7 @@ defmodule Awesome.List.Parser do
   defp clean_and_split_into_sections(string) do
     string
     |> String.split("\n# ", trim: true)
-    |> List.first
+    |> List.first()
     |> String.split("## ", trim: true)
     |> Enum.slice(1..-1)
   end
@@ -41,14 +41,14 @@ defmodule Awesome.List.Parser do
   defp get_section_description(string) do
     string
     |> String.slice(1..-2)
-    |> Earmark.as_html!
+    |> Earmark.as_html!()
   end
 
   defp parse_repos(list) do
     list
     |> Task.async_stream(&build_repo_node(parse_repo(&1)), @timeout)
     |> Enum.reduce([], &process_repo_node(&1, &2))
-    |> Enum.reverse
+    |> Enum.reverse()
   end
 
   defp process_repo_node({:ok, {:ok, repo}}, acc), do: [repo | acc]
@@ -58,16 +58,18 @@ defmodule Awesome.List.Parser do
     case get_repo_data(repo_url) do
       {:ok, %{@url => url, @stars => stars, @updated => updated}} ->
         {:ok, {repo_name, {Earmark.as_html!(repo_desc), url, stars, updated}}}
+
       _ ->
         {:error, :unavailable}
     end
   end
+
   defp build_repo_node(_repo), do: {:error, :unavailable}
 
   defp get_repo_data(repo_url) do
     repo_url
-    |> URI.parse
-    |> Github.get_repo_data
+    |> URI.parse()
+    |> Github.get_repo_data()
   end
 
   defp parse_repo(string), do: Regex.run(@regex_line_parser, string)

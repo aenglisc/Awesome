@@ -10,13 +10,14 @@ defmodule AwesomeWeb.PageController do
   def index(%{query_params: %{"min_stars" => stars_filter}} = conn, _params) do
     case Integer.parse(stars_filter) do
       :error ->
-        render conn, "index.html", list: Storage.get_list
+        render(conn, "index.html", list: Storage.get_list())
+
       {stars, _} ->
-        render conn, "index.html", list: Storage.get_list(stars)
+        render(conn, "index.html", list: Storage.get_list(stars))
     end
   end
 
   def index(conn, _params) do
-    render conn, "index.html", list: Storage.get_list
+    render(conn, "index.html", list: Storage.get_list())
   end
 end

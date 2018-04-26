@@ -2,9 +2,10 @@ defmodule AwesomeWeb.PageView do
   use AwesomeWeb, :view
 
   def render_table_of_contents(list) do
-    rendered_contents = list
-    |> Enum.map(&render_contents_item/1)
-    |> Enum.join("\n")
+    rendered_contents =
+      list
+      |> Enum.map(&render_contents_item/1)
+      |> Enum.join("\n")
 
     """
     <div class="container text-center col-xl-4 mb-5">
@@ -28,7 +29,7 @@ defmodule AwesomeWeb.PageView do
 
   defp name_to_id(name) do
     name
-    |> String.downcase
+    |> String.downcase()
     |> String.split(" ", trim: true)
     |> Enum.join("-")
   end
@@ -46,9 +47,10 @@ defmodule AwesomeWeb.PageView do
   end
 
   defp render_section({name, {desc, repos}}) do
-    rendered_repos = repos
-    |> Enum.map(&render_repo/1)
-    |> Enum.join("\n")
+    rendered_repos =
+      repos
+      |> Enum.map(&render_repo/1)
+      |> Enum.join("\n")
 
     """
     <div class="container text-center mt-3">
@@ -85,11 +87,14 @@ defmodule AwesomeWeb.PageView do
 
   defp render_days(0), do: "<small>updated today</small>"
   defp render_days(1), do: "<small>updated yesterday</small>"
-  defp render_days(days) when days >= 365, do: "<small class=\"text-danger\">updated #{days} days ago</small>"
+
+  defp render_days(days) when days >= 365,
+    do: "<small class=\"text-danger\">updated #{days} days ago</small>"
+
   defp render_days(days), do: "<small>updated #{days} days ago</small>"
 
   defp days_since_update(date) do
     {_, updated_at, _} = DateTime.from_iso8601(date)
-    round(DateTime.diff(DateTime.utc_now, updated_at) / 24 / 60 / 60)
+    round(DateTime.diff(DateTime.utc_now(), updated_at) / 24 / 60 / 60)
   end
 end
