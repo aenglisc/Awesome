@@ -5,7 +5,7 @@ defmodule Awesome.Mixfile do
   def project do
     [
       app: :awesome,
-      version: "0.3.6",
+      version: "0.3.7",
       elixir: "~> 1.6.2",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
